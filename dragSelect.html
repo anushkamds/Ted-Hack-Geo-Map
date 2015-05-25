@@ -1,0 +1,162 @@
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript">
+            var geocoder = new google.maps.Geocoder();
+
+            function geocodePosition(pos) {
+                geocoder.geocode({
+                    latLng: pos
+                }, function(responses) {
+                    if (responses && responses.length > 0) {
+                        updateMarkerAddress(responses[0].formatted_address);
+                        /**
+                         * 
+                         * params
+                         * address_components
+                         
+                         [Object { long_name="Janadhipathi Mawatha", short_name="Janadhipathi Mawatha", types=[1]}, Object { long_name="Fort", short_name="Fort", types=[2]}, Object { long_name="Colombo 01", short_name="Colombo 01", types=[3]}, 4 more...]
+                         0
+                         
+                         Object { long_name="Janadhipathi Mawatha", short_name="Janadhipathi Mawatha", types=[1]}
+                         1
+                         
+                         Object { long_name="Fort", short_name="Fort", types=[2]}
+                         
+                         Object { long_name="Sri Lanka", short_name="LK", types=[2]}
+                         formatted_address
+                         
+                         "Janadhipathi Mawatha, Colombo, Sri Lanka"
+                         geometry
+                         
+                         Object { bounds=rh, location=qf, location_type="GEOMETRIC_CENTER", more...}
+                         bounds
+                         
+                         rh { Da=ph, va=kh, getCenter=function(), more...}
+                         location
+                         
+                         qf { A=6.934201, F=79.84271579999995, toString=function(), more...}
+                         location_type
+                         
+                         "GEOMETRIC_CENTER"
+                         viewport
+                         
+                         rh { Da=ph, va=kh, getCenter=function(), more...}
+                         place_id
+                         
+                         "ChIJtWyExiVZ4joRDaUSiNUUlnA"
+                         types
+                         
+                         ["route"]
+                         0
+                         
+                         "route"
+                         * 
+                         * 
+                         */
+                        console.log(responses[0]);
+                    } else {
+                        updateMarkerAddress('Cannot determine address at this location.');
+                    }
+                });
+            }
+
+            function updateMarkerStatus(str) {
+                document.getElementById('markerStatus').innerHTML = str;
+            }
+
+            function updateMarkerPosition(latLng) {
+                document.getElementById('info').innerHTML = [
+                    latLng.lat(),
+                    latLng.lng()
+                ].join(', ');
+            }
+
+            function updateMarkerAddress(str) {
+                document.getElementById('address').innerHTML = str;
+            }
+
+            var latLng;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    try {
+                        latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    } catch (ex) {
+                        latLng = new google.maps.LatLng(6.000, 79.000);
+                    }
+                });
+
+            } else {
+                latLng = new google.maps.LatLng(6.000, 79.000);
+            }
+
+            function initialize() {
+                if (!latLng) {
+                    latLng = new google.maps.LatLng(6.000, 79.000);
+                }
+                var map = new google.maps.Map(document.getElementById('mapCanvas'), {
+                    zoom: 13,
+                    center: latLng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    title: 'Point A',
+                    map: map,
+                    draggable: true
+                });
+
+                // Update current position info.
+                updateMarkerPosition(latLng);
+                geocodePosition(latLng);
+
+                // Add dragging event listeners.
+                google.maps.event.addListener(marker, 'dragstart', function() {
+                    updateMarkerAddress('Dragging...');
+                });
+
+                google.maps.event.addListener(marker, 'drag', function() {
+                    updateMarkerStatus('Dragging...');
+                    updateMarkerPosition(marker.getPosition());
+                });
+
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    updateMarkerStatus('Drag ended');
+                    geocodePosition(marker.getPosition());
+                });
+            }
+
+            // Onload handler to fire off the app.
+            google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
+    </head>
+    <body>
+        <style>
+            #mapCanvas {
+                width: 500px;
+                height: 400px;
+                float: left;
+            }
+            #infoPanel {
+                float: left;
+                margin-left: 10px;
+            }
+            #infoPanel div {
+                margin-bottom: 5px;
+            }
+        </style>
+
+        <div id="mapCanvas"></div>
+        <div id="infoPanel">
+            <b>Marker status:</b>
+            <div id="markerStatus"><i>Click and drag the marker.</i></div>
+            <b>Current position:</b>
+            <div id="info"></div>
+            <b>Closest matching address:</b>
+            <div id="address"></div>
+            <div id="moreinfo"></div>
+        </div>
+    </body>
+</html>
