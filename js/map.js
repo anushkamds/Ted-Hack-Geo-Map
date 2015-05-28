@@ -51,6 +51,7 @@ function initialize() {
 
         infowindow.setContent('<div><strong>' + place.name + '</strong></div>');
         infowindow.open(map, marker);
+console.log(place.geometry.location);
         markersArray.push(place.name);
         markersArray.toString();
         document.getElementById("added-list").innerHTML = markersArray;
