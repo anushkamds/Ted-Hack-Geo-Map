@@ -1,5 +1,6 @@
 var locationHolder = {};
 function loadPlaces(place, marker) {
+    console.log(place);
     var id = place.id;
     if (locationHolder[id]) {
         return;
@@ -20,4 +21,38 @@ function loadPlaces(place, marker) {
         delete  locationHolder[id];
         me.closest('.location-holder-li').remove();
     })
+}
+
+$(document).ready(function() {
+    $('#save-btn').click(function() {
+        if ($("#option-courier").prop("checked") || $("#option-driver").prop("checked")) {
+            submitRegistrationForm();
+        }
+    });
+
+
+});
+
+function loadCourierServiceProviders() {
+
+}
+
+function submitRegistrationForm() {
+    var extraData= getextraData();
+    console.log(extraData);
+    $('#registration-form').submit(extraData);
+}
+
+function getextraData(){
+    var locations = [];
+    
+    $.each(locationHolder, function(index, value){
+        var place = value.place;
+        locations.push({
+            'name': place.formatted_address,
+            'lat': place.geometry.location.A,
+            'log': place.geometry.location.F
+        });
+    });
+    return locations;
 }
