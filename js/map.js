@@ -5,10 +5,10 @@ function initialize() {
     };
     var markersArray = [];
     var map = new google.maps.Map(document.getElementById('map-canvas'),
-        mapOptions);
+            mapOptions);
 
     var input = /** @type {HTMLInputElement} */ (
-        document.getElementById('pac-input'));
+            document.getElementById('pac-input'));
 
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
@@ -28,7 +28,7 @@ function initialize() {
         });
         var place = autocomplete.getPlace();
         if (!place.geometry) {
-            window.alert("Autocomplete's returned place contains no geometry");
+            $('#autocomplete-modal-wrapper').click();            
             return;
         }
 
@@ -39,7 +39,7 @@ function initialize() {
             map.setCenter(place.geometry.location);
             map.setZoom(7); // Why 17? Because it looks good.
         }
-        marker.setIcon( /** @type {google.maps.Icon} */ ({
+        marker.setIcon(/** @type {google.maps.Icon} */ ({
             url: place.icon,
             size: new google.maps.Size(71, 71),
             origin: new google.maps.Point(0, 0),
@@ -51,10 +51,11 @@ function initialize() {
 
         infowindow.setContent('<div><strong>' + place.name + '</strong></div>');
         infowindow.open(map, marker);
-console.log(place.geometry.location);
+        console.log(place.geometry.location);
         markersArray.push(place.name);
-        markersArray.toString();
-        document.getElementById("added-list").innerHTML = markersArray;
+//        markersArray.toString();
+        loadPlaces(place, marker);
+//        document.getElementById("added-list").innerHTML = markersArray;
     });
 
 }
