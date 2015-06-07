@@ -73,7 +73,8 @@ class DriverSearch {
 			return array();
 		}
 		$limit = (int) $limit;
-		$query = 'select * from `driver` where `route_id` in (' . implode(',', $routeIds) . ') LIMIT $limit';
+		$driverIds = DbManager::getConnection()->query('select driver_id from `route` where `id` in (' . implode(',', $routeIds) . ") LIMIT $limit")->fetchAll(PDO::FETCH_COLUMN);
+		$query = 'select * from `driver` where `id` in (' . implode(',', $routeIds) . ")";
 		return DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
 	}
 }

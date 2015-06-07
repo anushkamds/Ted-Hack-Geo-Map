@@ -89,15 +89,15 @@ function checkValidCity($cityName){
 }
 
 function getResponce($source, $destination) {
-	$soureInfo = $this->getLocationByName($source);
-	$destInfo = $this->getLocationByName($dest);
+	$soureInfo = getLocationByName($source);
+	$destInfo = getLocationByName($destination);
 	include_once '../../lib/DriverSearch.php';
 	$driverFinder = new DriverSearch();
 	$matchingeDrivers = $driverFinder->getMatchingDrivers(array($soureInfo->lat, $soureInfo->lng), array($destInfo->lat, $destInfo->lng), 5);
 	$rowFormat = '%firstName% %lastName% %phone%';
 	$driverRows = array();
 	foreach ($matchingeDrivers as $driver) {
-		$replacements = array('%firstName%' => $driver['firstname'], '%lastName%' => $driver['last_name'], '%phone%' => $driver['mobile_number']);
+		$replacements = array('%firstName%' => $driver['first_name'], '%lastName%' => $driver['last_name'], '%phone%' => $driver['mobile_number']);
 		$driverRows[] = strtr($rowFormat, $replacements);
 	}
 	return "List of Drivers \n" . implode("\n", $driverRows);
@@ -110,5 +110,6 @@ function saveRequest($validRequest){
 function getLocationByName($locationName, $fuzzy = 1.0) {
 	require_once 'Services/GeoNames.php';
 	$geo = new Services_GeoNames();
-	print_r($geo->search(array('q' => $locationName, 'username' => 'damith', 'maxRows' => '10', 'fuzzy' => $fuzzy)));
+	$locations = $geo->search(array('q' => $locationName, 'username' => 'damith', 'maxRows' => '10', 'fuzzy' => $fuzzy));
+	return array_shift($locations);
 }
