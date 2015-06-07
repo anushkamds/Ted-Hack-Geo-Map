@@ -1,6 +1,6 @@
 <?php
     if($_SERVER['REQUEST_METHOD']=='POST') {
-        
+        var_dump($_POST);die;
     }
 ?>
 <html>
@@ -27,7 +27,7 @@
             </div>
         </nav>
         <div class="row">
-            <form class="col s12">
+            <form class="col s12" method="POST" action="" name="dirver_form" id="dirver_form">
                 <input name="waypoints" type="hidden" id="waypoint-holder"/>
                 <div class="col s12">
                     <p>
@@ -113,7 +113,7 @@
                     </ul>
                 </div>
                 <div class="row">
-                    <a class="btn">Save</a>
+                    <input type="button" class="btn" value="Save"/>
                 </div>
 
             </form>

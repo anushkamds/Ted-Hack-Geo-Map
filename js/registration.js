@@ -38,12 +38,12 @@ function loadCourierServiceProviders() {
 }
 
 function submitRegistrationForm() {
-    var extraData= getextraData();
+    var extraData= getExtraData();
     console.log(extraData);
     $('#registration-form').submit(extraData);
 }
 
-function getextraData(){
+function getExtraData(){
     var locations = [];
     
     $.each(locationHolder, function(index, value){
