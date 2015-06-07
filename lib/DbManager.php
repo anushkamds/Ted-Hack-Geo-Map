@@ -1,6 +1,6 @@
 <?php
 
-require_once '../config/DatabaseConfig.php';
+require_once __DIR__ . '/../config/DatabaseConfig.php';
 
 class DbManager {
 	
