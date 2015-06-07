@@ -25,7 +25,15 @@ class DriverSearch {
 		$params = array($latitudeX, $longitudeX, $latRange[0], $latRange[1], $longRange[0], $longRange[1], $radius);
 		$sth->execute($params);
 		$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-		return array_column($result, 'distance', 'id');
+		if (function_exists('array_column')) {
+			return array_column($result, 'distance', 'id');
+		} else {
+			$ret = array();
+			foreach ($result as $row) {
+				$ret[$row['id']] = $row['distance'];
+			}
+			return $ret;
+		}
 	}
 
 	function getRouteIdsByLocations($locations) {
