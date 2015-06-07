@@ -12,7 +12,7 @@
     <body>
         <nav>
             <div class="nav-wrapper green accent-4">
-                <a href="#!" class="brand-logo">Geo Tracking</a>
+                <a href="#!" class="brand-logo">Geo Tracking - Registration</a>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="#"><i class="mdi-action-search"></i></a></li>
                     <li><a href="#"><i class="mdi-action-view-module"></i></a></li>
@@ -25,34 +25,34 @@
             <form class="col s12">
                 <div class="col s12">
                     <p>
-                        <input class="with-gap service-provider-options" name="group1" type="radio" id="option-driver" />
+                        <input class="with-gap service-provider-options" name="provider" type="radio" id="option-driver" />
                         <label for="option-driver">Driver</label>
                     </p>
                     <p>
-                        <input class="with-gap service-provider-options" name="group1" type="radio" id="option-courier"  />
+                        <input class="with-gap service-provider-options" name="provider" type="radio" id="option-courier"  />
                         <label for="option-courier">Courier Service</label>
                     </p>
                 </div>
                 <div id="courier-details-place-holder">
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="courier_service_name" type="text" class="validate">
+                            <input id="courier_service_name" type="text" class="validate" name="courier-name">
                             <label for="courier_service_name">Courier Service Name</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <textarea id="courier_service_address" class="materialize-textarea" length="255"></textarea>
+                            <textarea id="courier_service_address" class="materialize-textarea" length="255" name="courier-address"></textarea>
                             <label for="courier_service_address">Courier Service Address</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="telephone-number" type="text" class="validate">
+                            <input id="telephone-number" type="text" class="validate" name="courier-telephone">
                             <label for="telephone-number">Telephone Number</label>
                         </div>
                         <div class="input-field col s6">
-                            <input id="telephone-number-other" type="text">
+                            <input id="telephone-number-other" type="text" name="courier-other-number">
                             <label for="telephone-number-other">Other Number</label>
                         </div>
                     </div>
@@ -60,21 +60,21 @@
                 <div id="driver-details-place-holder">
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="first_name" type="text" class="validate">
+                            <input id="first_name" type="text" class="validate" name="driver-first-name">
                             <label for="first_name">First Name</label>
                         </div>
                         <div class="input-field col s6">
-                            <input id="last_name" type="text" class="validate">
+                            <input id="last_name" type="text" class="validate" name="driver-last-name">
                             <label for="last_name">Last Name</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="driver-nic" type="text" class="validate">
+                            <input id="driver-nic" type="text" class="validate" name="driver-nic">
                             <label for="driver-nic">NIC</label>
                         </div>
                         <div class="input-field col s6">
-                            <select id="courrier_service">
+                            <select id="courrier_service" name="driver-courier-service">
                                 <option value="" selected>None</option>
                                 <option value="1">Option 1</option>
                                 <option value="2">Option 2</option>
@@ -85,11 +85,11 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="first_name" type="text" class="validate">
+                            <input id="first_name" type="text" class="validate" name="driver-mobile-number">
                             <label for="first_name">Mobile Number</label>
                         </div>
                         <div class="input-field col s6">
-                            <input id="last_name" type="text" class="validate">
+                            <input id="last_name" type="text" class="validate" name="driver-other-number">
                             <label for="last_name">Other Number</label>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                     </ul>
                 </div>
                 <div class="row">
-                    <a class="btn">Button</a>
+                    <a class="btn">Save</a>
                 </div>
 
             </form>
@@ -120,7 +120,7 @@
                 <p>Auto-complete is returned place contains no geometry</p>
             </div>
             <div class="modal-footer">
-                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat btn">Close</a>
             </div>
         </div>
 
