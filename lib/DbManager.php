@@ -1,5 +1,7 @@
 <?php
 
+require_once '../config/DatabaseConfig.php';
+
 class DbManager {
 	
 	static $dbConnection = null;

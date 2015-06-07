@@ -1,5 +1,7 @@
 <?php
 
+require_once 'DbManager.php';
+
 class DriverSearch {
 	function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {  
 		$earth_radius = 6371;  
