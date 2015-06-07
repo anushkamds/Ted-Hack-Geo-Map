@@ -6,7 +6,7 @@ class DbManager {
 	
 	static $dbConnection = null;
 	
-	public static getConnection() {
+	public static function getConnection() {
 		if (is_null(self::$dbConnection)) {
 			$host = DatabaseConfig::HOST;
 			$username = DatabaseConfig::USER_NAME;

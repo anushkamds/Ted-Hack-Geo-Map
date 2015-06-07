@@ -25,6 +25,10 @@ $(document).ready(function() {
         out_duration: 200, // Transition out duration       
     }
     );
+    
+    $('.btn').click(function() {
+        
+    });
 
 });
 

@@ -1,3 +1,8 @@
+<?php
+    if($_SERVER['REQUEST_METHOD']=='POST') {
+        
+    }
+?>
 <html>
 
     <head>
@@ -23,6 +28,7 @@
         </nav>
         <div class="row">
             <form class="col s12">
+                <input name="waypoints" type="hidden" id="waypoint-holder"/>
                 <div class="col s12">
                     <p>
                         <input class="with-gap service-provider-options" name="provider" type="radio" id="option-driver" />
@@ -134,3 +140,5 @@
     </body>
 
 </html>
+
+
