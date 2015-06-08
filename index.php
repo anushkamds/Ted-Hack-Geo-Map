@@ -1,6 +1,21 @@
 <?php
     if($_SERVER['REQUEST_METHOD']=='POST') {
-        var_dump($_POST);die;
+        $driver = new Driver();
+        $driver->setFirstName($_POST['driver-first-name']);
+        $driver->setLastName($_POST['driver-last-name']);
+        $driver->setNic($_POST['driver-nic']);
+        $courierId = (!empty($_POST['driver-courier-service']))?$_POST['driver-courier-service']:NULL;
+        $driver->setCourierServiceProviderId($courierId);
+        $driver->setMobileNumber($_POST['driver-mobile-number']);
+        $driver->setOtherNumber($_POST['driver-other-number']);
+        $driver->save();
+        //TODO: create route, a driver can have multiple routes
+        $waypoints = json_decode($_['waypoints'],FALSE);
+        foreach ($waypoints as $waypoint) {
+            $latitude = $waypoint['A'];
+            $longitude = $waypoint['F'];
+            //TODO: save waypoints
+        }
     }
 ?>
 <html>

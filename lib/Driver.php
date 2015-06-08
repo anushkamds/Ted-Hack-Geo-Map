@@ -21,8 +21,25 @@ class Driver {
     protected $lastName;
     protected $address;
     protected $courierServiceProviderId;
-    
-    public function getId() {
+    protected $mobileNumber;
+    protected $otherNumber;
+    public function getMobileNumber() {
+        return $this->mobileNumber;
+    }
+
+    public function getOtherNumber() {
+        return $this->otherNumber;
+    }
+
+    public function setMobileNumber($mobileNumber) {
+        $this->mobileNumber = $mobileNumber;
+    }
+
+    public function setOtherNumber($otherNumber) {
+        $this->otherNumber = $otherNumber;
+    }
+
+        public function getId() {
         return $this->id;
     }
 
@@ -81,4 +98,5 @@ class Driver {
         
         $st->execute();
     }
+    
 }
