@@ -37,13 +37,13 @@ CREATE TABLE IF NOT EXISTS `driver` (
 -- Table structure for table `location`
 --
 
-CREATE TABLE IF NOT EXISTS `location` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(600) NOT NULL,
-  `lat` float(30,27) NOT NULL,
-  `log` float(30,27) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+-- CREATE TABLE IF NOT EXISTS `location` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `name` varchar(600) NOT NULL,
+--   `lat` float(30,27) NOT NULL,
+--   `log` float(30,27) NOT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 -- --------------------------------------------------------
 
@@ -72,9 +72,12 @@ CREATE TABLE IF NOT EXISTS `route` (
 --
 
 CREATE TABLE IF NOT EXISTS `way_point` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `route_id` int(11) NOT NULL,
-  `location_id` int(11) NOT NULL,
-  PRIMARY KEY (`route_id`,`location_id`),
-  KEY `location_id` (`location_id`)
+  `lat` float(30,27) NOT NULL,
+  `log` float(30,27) NOT NULL,
+  `order` int(11) NOT NULL
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`route_id`) REFERENCES `route`(`id`) ON DELETE CASCADE;
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
