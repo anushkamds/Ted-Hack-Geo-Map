@@ -31,10 +31,10 @@
 class Route {
 
     protected $id;
-    protected $source;
-    protected $destination;
-    protected $depatureTime;
-    protected $arrivaTime;
+    protected $source = '';
+    protected $destination = '';
+    protected $depatureTime = '';
+    protected $arrivaTime = '';
     protected $days = '';
     protected $driverId;
 
@@ -92,6 +92,25 @@ class Route {
 
     public function setDriverId($driverId) {
         $this->driverId = $driverId;
+    }
+
+    public function save() {
+        $query = "Insert INTO  `route`(source, destination, depature_time, arrival_time, days, driver_id) VALUES (:source, :destination, :depature_time, :arrival_time, :days, :driver_id)";
+        $st = DbManager::getConnection()->prepare($query);
+        $st->bindParam(":source", $this->source);
+        $st->bindParam(":destination", $this->destination);
+        $st->bindParam(":depature_time", $this->depatureTime);
+        $st->bindParam(":arrival_time", $this->arrivaTime);
+        $st->bindParam(":days", $this->days);
+        $st->bindParam(":driver_id", $this->driverId);
+        $st->execute();
+        $this->setId($this->getLastInsertedId());
+    }
+
+    protected function getLastInsertedId() {
+        $query = "SELECT max(id) as last_id FROM `route`";
+        $id = DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        return $id[0]['last_id'];
     }
 
 }

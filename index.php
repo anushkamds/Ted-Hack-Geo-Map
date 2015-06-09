@@ -3,7 +3,11 @@ error_reporting(-1);
 ini_set('display_errors', 'On');
 require_once './lib/Driver.php';
 require_once './lib/CourierService.php';
+require './lib/Location.php';
+require_once './lib/Route.php';
+require_once './lib/WayPoints.php';
 require_once './lib/DbManager.php';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_POST['provider'] == 'driver') {
         $driver = new Driver();
@@ -16,12 +20,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $driver->setOtherNumber($_POST['driver-other-number']);
         $driver->setAddress($_POST['driver-address']);
         $driver->save();
+
+        $route = new Route();
+        $route->setDriverId($driver->getId());
+        $route->save();
         //TODO: create route, a driver can have multiple routes
         $waypoints = json_decode($_POST['waypoints'], FALSE);
         foreach ($waypoints as $waypoint) {
             $latitude = $waypoint->A;
             $longitude = $waypoint->F;
-            //TODO: save waypoints
+            $location = new Location();
+            $location->setLat($latitude);
+            $location->setLog($longitude);
+            $location->save();
+
+            $newWayPoint = new WayPoints();
+            $newWayPoint->setRouteId($route->getId());
+            $newWayPoint->setLocationId($location->getId());
+            $newWayPoint->save();
         }
     } else {
         $courierService = new CourierService();

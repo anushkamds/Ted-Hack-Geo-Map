@@ -103,7 +103,7 @@ class Driver {
     protected function getLastInsertedId() {
         $query = "SELECT max(id) as last_id FROM `driver`";
         $id = DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
-        return $id['last_id'];
+        return $id[0]['last_id'];
     }
 
 }

@@ -20,7 +20,7 @@
  */
 
 /**
- * [CourierService]
+ * [Location]
  * 
  * [class Description]
  * 
@@ -28,13 +28,12 @@
  * @package 
  * @author Nuwan Chathuranga <nuwan@orangehrm.us.com>
  */
-class CourierService {
+class Location {
 
     protected $id;
-    protected $name;
-    protected $address;
-    protected $telephone;
-    protected $otherTelephone;
+    protected $name = '';
+    protected $lat;
+    protected $log;
 
     public function getId() {
         return $this->id;
@@ -44,16 +43,12 @@ class CourierService {
         return $this->name;
     }
 
-    public function getAddress() {
-        return $this->address;
+    public function getLat() {
+        return $this->lat;
     }
 
-    public function getTelephone() {
-        return $this->telephone;
-    }
-
-    public function getOtherTelephone() {
-        return $this->otherTelephone;
+    public function getLog() {
+        return $this->log;
     }
 
     public function setId($id) {
@@ -64,42 +59,50 @@ class CourierService {
         $this->name = $name;
     }
 
-    public function setAddress($address) {
-        $this->address = $address;
+    public function setLat($lat) {
+        $this->lat = $lat;
     }
 
-    public function setTelephone($telephone) {
-        $this->telephone = $telephone;
-    }
-
-    public function setOtherTelephone($otherTelephone) {
-        $this->otherTelephone = $otherTelephone;
+    public function setLog($log) {
+        $this->log = $log;
     }
 
     public function save() {
-        $query = "INSERT INTO `courrier_service` (`name`, `address`, `telephone`, `other_telephone`) VALUES (:name, :address, :telephone, :other_telephone)";
-        $st = DbManager::getConnection()->prepare($query);
-        $st->bindParam(":name", $this->name);
-        $st->bindParam(":address", $this->address);
-        $st->bindParam(":telephone", $this->telephone);
-        $st->bindParam(":other_telephone", $this->otherTelephone);
-        $st->execute();
-        $this->setId($this->getLastInsertedId());
-    }
-
-    public function executeQuery($query) {
-        return DbManager::getConnection()->query($query);
-    }
-
-    public function getCourierServiceList() {
-        $query = "SELECT * FROM `courrier_service`";
-        return DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        $location = $this->getLocationByLatAndLog($this->lat, $this->log);
+        if ($location instanceof Location) {
+            $this->setId($location->getId());
+            $this->setLat($location->getLat());
+            $this->setLog($location->getLog());
+            $this->setName($location->getName());
+        } else {
+            $query = "Insert INTO  `location`(name, lat, log) VALUES (:name, :lat, :log)";
+            $st = DbManager::getConnection()->prepare($query);
+            $st->bindParam(":name", $this->name);
+            $st->bindParam(":lat", $this->lat);
+            $st->bindParam(":log", $this->log);
+            $st->execute();
+            $this->setId($this->getLastInsertedId());
+        }
     }
 
     protected function getLastInsertedId() {
-        $query = "SELECT max(id) as last_id FROM `courrier_service`";
+        $query = "SELECT max(id) as last_id FROM `location`";
         $id = DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
         return $id[0]['last_id'];
+    }
+
+    public function getLocationByLatAndLog($lat, $log) {
+        $query = "SELECT * FROM `location` WHERE lat={$lat} AND log={$log}";
+        $locationData = DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        if (isset($locationData[0])) {
+            $location = new Location();
+            $this->setId($locationData[0]['id']);
+            $this->setLat($locationData[0]['lat']);
+            $this->setLog($locationData[0]['log']);
+            $this->setName($locationData[0]['name']);
+            return $location;
+        }
+        return false;
     }
 
 }
