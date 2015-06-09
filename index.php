@@ -1,26 +1,45 @@
 <?php
-    if($_SERVER['REQUEST_METHOD']=='POST') {
+error_reporting(-1);
+ini_set('display_errors', 'On');
+require_once './lib/Driver.php';
+require_once './lib/CourierService.php';
+require_once './lib/DbManager.php';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_POST['provider'] == 'driver') {
         $driver = new Driver();
         $driver->setFirstName($_POST['driver-first-name']);
         $driver->setLastName($_POST['driver-last-name']);
         $driver->setNic($_POST['driver-nic']);
-        $courierId = (!empty($_POST['driver-courier-service']))?$_POST['driver-courier-service']:NULL;
+        $courierId = (!empty($_POST['driver-courier-service'])) ? $_POST['driver-courier-service'] : NULL;
         $driver->setCourierServiceProviderId($courierId);
         $driver->setMobileNumber($_POST['driver-mobile-number']);
         $driver->setOtherNumber($_POST['driver-other-number']);
+        $driver->setAddress($_POST['driver-address']);
         $driver->save();
         //TODO: create route, a driver can have multiple routes
-        $waypoints = json_decode($_['waypoints'],FALSE);
+        $waypoints = json_decode($_POST['waypoints'], FALSE);
         foreach ($waypoints as $waypoint) {
-            $latitude = $waypoint['A'];
-            $longitude = $waypoint['F'];
+            $latitude = $waypoint->A;
+            $longitude = $waypoint->F;
             //TODO: save waypoints
         }
+    } else {
+        $courierService = new CourierService();
+        $courierService->setAddress($_POST['courier-address']);
+        $courierService->setName($_POST['courier-name']);
+        $courierService->setTelephone($_POST['courier-telephone']);
+        $courierService->setOtherTelephone($_POST['courier-other-number']);
+        $courierService->save();
     }
+}
 ?>
 <html>
 
     <head>
+        <title>
+            eCarrier
+        </title>
+        <link rel="icon" type="image/png" href="favicon.ico">
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="materialize/css/materialize.min.css" media="screen,projection" />
         <link type="text/css" rel="stylesheet" href="css/style.css" media="screen,projection" />
@@ -46,11 +65,11 @@
                 <input name="waypoints" type="hidden" id="waypoint-holder"/>
                 <div class="col s12">
                     <p>
-                        <input class="with-gap service-provider-options" name="provider" type="radio" id="option-driver" />
+                        <input class="with-gap service-provider-options" name="provider" type="radio" id="option-driver" value="driver"/>
                         <label for="option-driver">Driver</label>
                     </p>
                     <p>
-                        <input class="with-gap service-provider-options" name="provider" type="radio" id="option-courier"  />
+                        <input class="with-gap service-provider-options" name="provider" type="radio" id="option-courier" value="courier" />
                         <label for="option-courier">Courier Service</label>
                     </p>
                 </div>
@@ -106,6 +125,12 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
+                            <textarea id="courier_service_address" class="materialize-textarea" length="255" name="driver-address"></textarea>
+                            <label for="courier_service_address">Driver Address</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
                             <input id="first_name" type="text" class="validate" name="driver-mobile-number">
                             <label for="first_name">Mobile Number</label>
                         </div>
@@ -114,21 +139,22 @@
                             <label for="last_name">Other Number</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s6">
-                        <p id="added-list">Places</p>
-                        <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
-                        <div id="map-canvas" class="s6"></div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <p id="added-list">Places</p>
+                            <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
+                            <div id="map-canvas" class="s6"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ul class="collection with-header" id="selected-location-place-holder">
+                            <li class="collection-header"><h6>Selected Locations</h6></li>
+                        </ul>
                     </div>
                 </div>
+
                 <div class="row">
-                    <ul class="collection with-header" id="selected-location-place-holder">
-                        <li class="collection-header"><h6>Selected Locations</h6></li>
-                    </ul>
-                </div>
-                <div class="row">
-                    <input type="button" class="btn" value="Save"/>
+                    <input type="button" class="btn picker__header" value="Save"/>
                 </div>
 
             </form>
