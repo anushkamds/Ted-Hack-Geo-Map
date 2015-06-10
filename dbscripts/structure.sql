@@ -1,3 +1,25 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.11.3
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Jun 09, 2015 at 03:22 PM
+-- Server version: 5.5.42
+-- PHP Version: 5.6.9
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `tad_courier`
+--
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `courrier_service`
@@ -36,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `driver` (
 --
 -- Table structure for table `location`
 --
-
+-- 
 -- CREATE TABLE IF NOT EXISTS `location` (
 --   `id` int(11) NOT NULL AUTO_INCREMENT,
 --   `name` varchar(600) NOT NULL,
@@ -44,8 +66,6 @@ CREATE TABLE IF NOT EXISTS `driver` (
 --   `log` float(30,27) NOT NULL,
 --   PRIMARY KEY (`id`)
 -- ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `route`
@@ -60,24 +80,22 @@ CREATE TABLE IF NOT EXISTS `route` (
   `days` varchar(255) NOT NULL,
   `driver_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `route_ibfk_4` (`destination`),
-  KEY `route_ibfk_2` (`driver_id`),
-  KEY `route_ibfk_3` (`source`)
+  KEY `route_ibfk_2` (`driver_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
--- --------------------------------------------------------
+
 
 --
 -- Table structure for table `way_point`
 --
 
-CREATE TABLE IF NOT EXISTS `way_point` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `route_id` int(11) NOT NULL,
-  `lat` float(30,27) NOT NULL,
-  `log` float(30,27) NOT NULL,
-  `order` int(11) NOT NULL
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`route_id`) REFERENCES `route`(`id`) ON DELETE CASCADE;
+ CREATE TABLE IF NOT EXISTS `way_point` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`route_id` int(11) NOT NULL,
+ `lat` float(30,27) NOT NULL,
+ `log` float(30,27) NOT NULL,
+ `order` int(11) NOT NULL
+ PRIMARY KEY (`id`),
+ FOREIGN KEY (`route_id`) REFERENCES `route`(`id`) ON DELETE CASCADE;
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

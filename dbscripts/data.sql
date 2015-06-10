@@ -1,4 +1,3 @@
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- Dumping data for table `courrier_service`
@@ -22,8 +21,6 @@ INSERT INTO `driver` (`id`, `NIC`, `first_name`, `last_name`, `address`, `mobile
 (6, '1987123', 'Russell', 'Moore', '2169 Harrison Street,Oakland, CA 94612 ', '415-475-1009', '', NULL),
 (7, '675557755', 'Rodney', 'Blackmon', '4170 Cityview Drive,Springfield, PA 19064 ', '610-543-4004', '', NULL);
 
-
---
 -- Dumping data for table `location`
 --
 
@@ -50,7 +47,7 @@ INSERT INTO `route` (`id`, `source`, `destination`, `depature_time`, `arrival_ti
 (5, 1, 5, '00:00:00', '00:00:00', '', 3),
 (6, 2, 6, '00:00:00', '00:00:00', '', 5);
 
-
+-- --------------------------------------------------------
 --
 -- Dumping data for table `way_point`
 --
@@ -85,9 +82,7 @@ ALTER TABLE `driver`
 -- Constraints for table `route`
 --
 ALTER TABLE `route`
-  ADD CONSTRAINT `route_ibfk_4` FOREIGN KEY (`destination`) REFERENCES `location` (`id`),
-  ADD CONSTRAINT `route_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `route_ibfk_3` FOREIGN KEY (`source`) REFERENCES `location` (`id`);
+  ADD CONSTRAINT `route_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `way_point`
@@ -95,3 +90,4 @@ ALTER TABLE `route`
 ALTER TABLE `way_point`
   ADD CONSTRAINT `way_point_ibfk_2` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `way_point_ibfk_1` FOREIGN KEY (`route_id`) REFERENCES `route` (`id`) ON DELETE CASCADE;
+

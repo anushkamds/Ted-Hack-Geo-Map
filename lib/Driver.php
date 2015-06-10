@@ -11,10 +11,8 @@
  *
  * @author chathura
  */
-require_once 'DbManager.php';
-
 class Driver {
-    
+
     protected $id;
     protected $nic;
     protected $firstName;
@@ -23,6 +21,7 @@ class Driver {
     protected $courierServiceProviderId;
     protected $mobileNumber;
     protected $otherNumber;
+
     public function getMobileNumber() {
         return $this->mobileNumber;
     }
@@ -39,7 +38,7 @@ class Driver {
         $this->otherNumber = $otherNumber;
     }
 
-        public function getId() {
+    public function getId() {
         return $this->id;
     }
 
@@ -88,15 +87,23 @@ class Driver {
     }
 
     public function save() {
-        $query = "Insert INTO driver (NIC,first_name,last_name,address,courrier_service_provide_id) VALUES (:nic, :first, :last, :address, :courier_id)";
+        $query = "Insert INTO  `driver`(nic,first_name,last_name,address,courrier_service_provide_id,mobile_number,other_number) VALUES (:nic, :first, :last, :address, :courier_id, :mobile_number, :other_number)";
         $st = DbManager::getConnection()->prepare($query);
-        $st->bind_param(":nic",  $this->getNic());
-        $st->bind_param(":first", $this->getFirstName());
-        $st->bind_param(":last", $this->getLastName());
-        $st->bind_param(":address",  $this->getAddress());
-        $st->bind_param(":courier_id", $this->getCourierServiceProviderId());
-        
+        $st->bindParam(":nic", $this->nic);
+        $st->bindParam(":first", $this->firstName);
+        $st->bindParam(":last", $this->lastName);
+        $st->bindParam(":address", $this->address);
+        $st->bindParam(":courier_id", $this->courierServiceProviderId);
+        $st->bindParam(":mobile_number", $this->mobileNumber);
+        $st->bindParam(":other_number", $this->otherNumber);        
         $st->execute();
+        $this->setId($this->getLastInsertedId());
     }
-    
+
+    protected function getLastInsertedId() {
+        $query = "SELECT max(id) as last_id FROM `driver`";
+        $id = DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        return $id[0]['last_id'];
+    }
+
 }
