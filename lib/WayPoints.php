@@ -32,6 +32,9 @@ class WayPoints {
 
     protected $routeId;
     protected $locationId;
+    protected $lat;
+    protected $log;
+    protected $order;
 
     public function getRouteId() {
         return $this->routeId;
@@ -39,6 +42,18 @@ class WayPoints {
 
     public function getLocationId() {
         return $this->locationId;
+    }
+
+    public function getLat() {
+        return $this->lat;
+    }
+
+    public function getLog() {
+        return $this->log;
+    }
+
+    public function getOrder() {
+        return $this->order;
     }
 
     public function setRouteId($routeId) {
@@ -49,11 +64,25 @@ class WayPoints {
         $this->locationId = $locationId;
     }
 
+    public function setLat($lat) {
+        $this->lat = $lat;
+    }
+
+    public function setLog($log) {
+        $this->log = $log;
+    }
+
+    public function setOrder($order) {
+        $this->order = $order;
+    }
+
     public function save() {
-        $query = "Insert INTO  `way_point`(route_id, location_id) VALUES (:route_id, :location_id)";
+        $query = "Insert INTO  `way_point` (`route_id`, `lat`, `log`, `order`) VALUES (:route_id, :lat, :log, :order)";
         $st = DbManager::getConnection()->prepare($query);
         $st->bindParam(":route_id", $this->routeId);
-        $st->bindParam(":location_id", $this->locationId);
+        $st->bindParam(":lat", $this->lat);
+        $st->bindParam(":log", $this->log);
+        $st->bindParam(":order", $this->order);
         $st->execute();
     }
 

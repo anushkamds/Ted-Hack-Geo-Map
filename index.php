@@ -26,17 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $route->save();
         //TODO: create route, a driver can have multiple routes
         $waypoints = json_decode($_POST['waypoints'], FALSE);
+        $order = 0;
         foreach ($waypoints as $waypoint) {
             $latitude = $waypoint->A;
-            $longitude = $waypoint->F;
-            $location = new Location();
-            $location->setLat($latitude);
-            $location->setLog($longitude);
-            $location->save();
+            $longitude = $waypoint->F;           
 
             $newWayPoint = new WayPoints();
-            $newWayPoint->setRouteId($route->getId());
-            $newWayPoint->setLocationId($location->getId());
+            $newWayPoint->setRouteId($route->getId());            
+            $newWayPoint->setLat($latitude);
+            $newWayPoint->setLog($longitude);
+            $newWayPoint->setOrder(++$order);
             $newWayPoint->save();
         }
     } else {
