@@ -89,18 +89,21 @@ function checkValidCity($cityName){
 }
 
 function getResponce($source, $destination) {
-	$soureInfo = getLocationByName($source);
-	$destInfo = getLocationByName($destination);
+	$sourceInfo = getLocationByName($source);
+	$destinationInfo = getLocationByName($destination);
+    if (is_null($sourceInfo) || is_null($destinationInfo)) {
+        return 'Something wrong with source or destination names';
+    }
 	include_once '../../lib/DriverSearch.php';
 	$driverFinder = new DriverSearch();
-	$matchingeDrivers = $driverFinder->getMatchingDrivers(array($soureInfo->lat, $soureInfo->lng), array($destInfo->lat, $destInfo->lng), 5);
+	$matchingDrivers = $driverFinder->getMatchingDrivers(array($sourceInfo->lat, $sourceInfo->lng), array($destinationInfo->lat, $destinationInfo->lng), 5);
 	$rowFormat = '%firstName% %lastName% %phone%';
 	$driverRows = array();
-	foreach ($matchingeDrivers as $driver) {
+	foreach ($matchingDrivers as $driver) {
 		$replacements = array('%firstName%' => $driver['first_name'], '%lastName%' => $driver['last_name'], '%phone%' => $driver['mobile_number']);
 		$driverRows[] = strtr($rowFormat, $replacements);
 	}
-	return "List of Drivers \n" . implode("\n", $driverRows);
+	return count($driverRows) > 0 ? "List of Drivers \n" . implode("\n", $driverRows) : 'No matching driver found';
 }
 
 function saveRequest($validRequest){
@@ -111,5 +114,8 @@ function getLocationByName($locationName, $fuzzy = 1.0) {
 	require_once 'Services/GeoNames.php';
 	$geo = new Services_GeoNames();
 	$locations = $geo->search(array('q' => $locationName, 'username' => 'damith', 'maxRows' => '10', 'fuzzy' => $fuzzy));
-	return array_shift($locations);
+	$lkLocations = array_filter($locations, function($val) {
+        return $val->countryCode == 'LK';
+    });
+    return array_shift($lkLocations);
 }
