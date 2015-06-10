@@ -10,7 +10,7 @@
         $driver->setOtherNumber($_POST['driver-other-number']);
         $driver->save();
         //TODO: create route, a driver can have multiple routes
-        $waypoints = json_decode($_['waypoints'],FALSE);
+        $waypoints = json_decode($_POST['waypoints'],FALSE);
         foreach ($waypoints as $waypoint) {
             $latitude = $waypoint['A'];
             $longitude = $waypoint['F'];

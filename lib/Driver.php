@@ -88,7 +88,7 @@ class Driver {
     }
 
     public function save() {
-        $query = "Insert INTO (NIC,first_name,last_name,address,courrier_service_provide_id) VALUES (:nic, :first, :last, :address, :courier_id)";
+        $query = "Insert INTO driver (NIC,first_name,last_name,address,courrier_service_provide_id) VALUES (:nic, :first, :last, :address, :courier_id)";
         $st = DbManager::getConnection()->prepare($query);
         $st->bind_param(":nic",  $this->getNic());
         $st->bind_param(":first", $this->getFirstName());
