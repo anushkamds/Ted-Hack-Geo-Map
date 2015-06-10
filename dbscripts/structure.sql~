@@ -94,8 +94,8 @@ CREATE TABLE IF NOT EXISTS `route` (
 `route_id` int(11) NOT NULL,
  `lat` float(30,27) NOT NULL,
  `log` float(30,27) NOT NULL,
- `order` int(11) NOT NULL,
+ `order` int(11) NOT NULL
  PRIMARY KEY (`id`),
- FOREIGN KEY (`route_id`) REFERENCES `route`(`id`) ON DELETE CASCADE
+ FOREIGN KEY (`route_id`) REFERENCES `route`(`id`) ON DELETE CASCADE;
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
