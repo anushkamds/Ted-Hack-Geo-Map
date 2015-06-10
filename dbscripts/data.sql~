@@ -68,5 +68,5 @@ ALTER TABLE `route`
 -- Constraints for table `way_point`
 --
 ALTER TABLE `way_point`
-  ADD CONSTRAINT FOREIGN KEY (`route_id`) REFERENCES `route` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `way_point_ibfk_1` FOREIGN KEY (`route_id`) REFERENCES `route` (`id`) ON DELETE CASCADE;
 
