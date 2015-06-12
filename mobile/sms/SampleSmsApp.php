@@ -85,7 +85,10 @@ function getSourceAndDestination($smsMessage){
 }
 
 function checkValidCity($cityName){
-	//check city is existing in the database;
+	$existing = getLocationByName($cityName);
+    if (is_null($existing)) {
+        return false;
+    }
 	return true;
 }
 
