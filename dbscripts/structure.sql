@@ -99,3 +99,22 @@ CREATE TABLE IF NOT EXISTS `route` (
  FOREIGN KEY (`route_id`) REFERENCES `route`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE  `driver` ADD  `lat` FLOAT( 30, 27 ) NOT NULL AFTER  `courrier_service_provide_id` ,
+ADD  `log` FLOAT( 30, 27 ) NOT NULL AFTER  `lat` ;
+
+--
+-- Table structure for table `service_log`
+--
+
+CREATE TABLE IF NOT EXISTS `service_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `driver_id` int(11) NOT NULL,
+  `customer_name` varchar(200) NOT NULL,
+  `customer_phone_no` varchar(10) NOT NULL,
+  `from` varchar(20) NOT NULL,
+  `to` varchar(20) NOT NULL,
+  `service_status` tinyint(1) NOT NULL COMMENT 'false for delivery true for pickup',
+  PRIMARY KEY (`id`),
+FOREIGN KEY (`driver_id`) REFERENCES `driver`(`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
