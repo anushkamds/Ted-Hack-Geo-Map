@@ -14,6 +14,7 @@
 include_once '../../lib/sms/SmsReceiver.php';
 include_once '../../lib/sms/SmsSender.php';
 include_once '../log.php';
+require_once '../../lib/DbManager.php';
 ini_set('error_log', 'sms-app-error.log');
 
 try {
@@ -73,9 +74,9 @@ function getSourceAndDestination($smsMessage){
 			$validation=false;
 		}
 		if ($validation) {
-			if (saveRequest($splitMessage)) {
-				$responseMsg=getResponce($splitMessage[0], $splitMessage[1]);
-			}
+			$responseMsg=getResponce($splitMessage[0], $splitMessage[1]);
+			$receiver = new SmsReceiver();
+			saveRequest($splitMessage,$receiver->getAddress(),$responseMsg);
 		}
 	} else {
 		$responseMsg='Invalid Message content format should be [source] <space> [destination]';
@@ -106,8 +107,15 @@ function getResponce($source, $destination) {
 	return count($driverRows) > 0 ? "List of Drivers \n" . implode("\n", $driverRows) : 'No matching driver found';
 }
 
-function saveRequest($validRequest){
-	return true;
+function saveRequest($splitMessage,$address,$responseMsg){
+	$number=explode(':',$address);
+	$query = "Insert INTO  `request_log` (`requestNumber` ,`source` ,`destination` ,`responce`) VALUES (:requestNumber,:source ,:destination ,:responce)";
+	$st = DbManager::getConnection()->prepare($query);
+	$st->bindParam(":requestNumber", $number[1]);
+	$st->bindParam(":source", $splitMessage[0]);
+	$st->bindParam(":destination", $splitMessage[1]);
+	$st->bindParam(":responce", $responseMsg);
+	$st->execute();
 }
 
 function getLocationByName($locationName, $fuzzy = 1.0) {
