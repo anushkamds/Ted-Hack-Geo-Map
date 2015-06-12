@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //TODO: create route, a driver can have multiple routes
         $waypoints = json_decode($_POST['waypoints'], FALSE);
         $order = 0;
+        $wayPoints = array();
         foreach ($waypoints as $waypoint) {
             $latitude = $waypoint->A;
             $longitude = $waypoint->F;           
@@ -36,8 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $newWayPoint->setLat($latitude);
             $newWayPoint->setLog($longitude);
             $newWayPoint->setOrder(++$order);
-            $newWayPoint->save();
+            $wayPoints[] = $newWayPoint;
         }
+        WayPoints::saveCollection($wayPoints);
     } else {
         $courierService = new CourierService();
         $courierService->setAddress($_POST['courier-address']);

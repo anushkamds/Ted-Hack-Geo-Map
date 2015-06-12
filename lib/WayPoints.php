@@ -86,4 +86,21 @@ class WayPoints {
         $st->execute();
     }
 
+    /**
+     * @param WayPoints[] $wayPoints collection of way point
+     */
+    public static function saveCollection($wayPoints) {
+        $query = "Insert INTO  `way_point` (`route_id`, `lat`, `log`, `order`) VALUES (:route_id, :lat, :log, :order)";
+        $sth = DbManager::getConnection()->prepare($query);
+        DbManager::getConnection()->beginTransaction();
+        foreach ($wayPoints as $wayPoint) {
+            $sth->bindParam(":route_id", $wayPoint->routeId);
+            $sth->bindParam(":lat", $wayPoint->lat);
+            $sth->bindParam(":log", $wayPoint->log);
+            $sth->bindParam(":order", $wayPoint->order);
+            $sth->execute();
+        }
+        return DbManager::getConnection()->commit();
+    }
+
 }
