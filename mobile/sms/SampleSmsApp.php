@@ -88,9 +88,10 @@ function getSourceAndDestination($smsMessage){
 			$valid = false;
 		}
 		if ($valid) {
-			$responseMsg = getResponce($source, $destination);
-			$receiver = new SmsReceiver();
-            saveRequest($splitMessage,$receiver->getAddress(),$responseMsg);
+            $receiver = new SmsReceiver();
+            $requestId = saveRequest($sourceStr, $destinationStr, $receiver->getAddress());
+			$responseMsg = getResponce($source, $destination, $requestId);
+            updateRequestDetails($requestId, $responseMsg);
 		}
 	} else {
 		$responseMsg='Invalid Message content format should be [source] <space> [destination]';
@@ -110,7 +111,7 @@ function notifyDrivers($driversNearSourceLocation) {
     // TODO: send notifications to matching drivers
 }
 
-function getResponce($source, $destination) {
+function getResponce($source, $destination, $requestId) {
 	include_once '../../lib/DriverSearch.php';
 	$driverFinder = new DriverSearch();
     $driversNearSourceLocation = $driverFinder->findDriversNearSourceLocation(array($source->lat, $source->lng));
@@ -137,18 +138,26 @@ function getResponce($source, $destination) {
 		$replacements = array('%firstName%' => $driver['first_name'], '%lastName%' => $driver['last_name'], '%phone%' => $driver['mobile_number']);
 		$driverRows[] = strtr($rowFormat, $replacements);
 	}
-	return count($driverRows) > 0 ? "List of Drivers \n" . implode("\n", $driverRows) : 'No matching driver found';
+	return count($driverRows) > 0 ? "TId: $requestId \n" . implode("\n", $driverRows) : 'No matching driver found';
 }
 
-function saveRequest($splitMessage,$address,$responseMsg){
+function saveRequest($sourceStr, $destinationStr, $address){
 	$number=explode(':',$address);
-	$query = "Insert INTO  `request_log` (`requestNumber` ,`source` ,`destination` ,`responce`) VALUES (:requestNumber,:source ,:destination ,:responce)";
+	$query = "Insert INTO  `request_log` (`requestNumber` ,`source` ,`destination`) VALUES (:requestNumber,:source ,:destination)";
 	$st = DbManager::getConnection()->prepare($query);
 	$st->bindParam(":requestNumber", $number[1]);
-	$st->bindParam(":source", $splitMessage[0]);
-	$st->bindParam(":destination", $splitMessage[1]);
-	$st->bindParam(":responce", $responseMsg);
+	$st->bindParam(":source", $sourceStr);
+	$st->bindParam(":destination", $destinationStr);
 	$st->execute();
+    return DbManager::getConnection()->lastInsertId();
+}
+
+function updateRequestDetails($requestId, $responseMassage) {
+    $query = 'update `request_log` set `responce` = :responce where id = :id';
+    $st = DbManager::getConnection()->prepare($query);
+    $st->bindParam(":responce", $responseMassage);
+    $st->bindParam(":id", $requestId);
+    $st->execute();
 }
 
 function getLocationByName($locationName, $fuzzy = 1.0) {
