@@ -1,12 +1,17 @@
+var directionsDisplay;
+var directionsService;
+var map;
 function initialize() {
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	 directionsService = new google.maps.DirectionsService();
     var mapOptions = {
         center: new google.maps.LatLng(7.26801, 79.861573),
         zoom: 7
     };
     var markersArray = [];
-    var map = new google.maps.Map(document.getElementById('map-canvas'),
+    map = new google.maps.Map(document.getElementById('map-canvas'),
             mapOptions);
-
+	directionsDisplay.setMap(map);
     var input = /** @type {HTMLInputElement} */ (
             document.getElementById('pac-input'));
 
@@ -55,10 +60,40 @@ function initialize() {
         markersArray.push(place.name);
 //        markersArray.toString();
         loadPlaces(place, marker);
+		processWaypoints();
 //        document.getElementById("added-list").innerHTML = markersArray;
     });
 
 }
 
+function processWaypoints() {
+	var locations = getExtraData();
+	if(locations.length>1) {
+		
+            var request = {
+                origin: locations[0] ? new google.maps.LatLng(locations[0].lat, locations[0].log) : {},
+                destination: locations[0] ? new google.maps.LatLng(locations[locations.length - 1].lat, locations[locations.length - 1].log) : {},
+                waypoints: function() {
+                    var waypoints = Array();
+                    for (var i = 1; i < (locations.length - 1); i++) {
+                        waypoints.push({
+                            location: new google.maps.LatLng(locations[i].lat, locations[i].log),
+                            stopover: false
+                        });
+                    }
+                    return waypoints;
+                }(),
+                provideRouteAlternatives: false,
+                travelMode: google.maps.TravelMode.DRIVING
+			};
+            directionsService.route(request, function(result, status) {
 
+                if (status == google.maps.DirectionsStatus.OK) {
+                    $('#waypoint-holder').val(JSON.stringify(result['routes'][0]['overview_path']));
+					directionsDisplay.setDirections(result);
+                }
+                
+            });
+	}
+}
 

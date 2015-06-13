@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var directionsService = new google.maps.DirectionsService();
+  
     var firstTime = true;
 //    $('select').material_select();
     $('#courier-details-place-holder').hide();
@@ -33,36 +33,8 @@ $(document).ready(function() {
     );
 
     $('.btn').click(function() {
-        if ($("#option-courier").prop("checked")) {
-            $('#dirver_form').submit();
-        } else {
-            var locations = getExtraData();
-            var request = {
-                origin: locations[0] ? new google.maps.LatLng(locations[0].lat, locations[0].log) : {},
-                destination: locations[0] ? new google.maps.LatLng(locations[locations.length - 1].lat, locations[locations.length - 1].log) : {},
-                waypoints: function() {
-                    var waypoints = Array();
-                    for (var i = 1; i < (locations.length - 1); i++) {
-                        waypoints.push({
-                            location: new google.maps.LatLng(locations[i].lat, locations[i].log),
-                            stopover: false
-                        });
-                    }
-                    return waypoints
-                }(),
-                provideRouteAlternatives: false,
-                travelMode: google.maps.TravelMode.DRIVING
-
-            }
-            directionsService.route(request, function(result, status) {
-
-                if (status == google.maps.DirectionsStatus.OK) {
-                    $('#waypoint-holder').val(JSON.stringify(result['routes'][0]['overview_path']));
-
-                }
-                $('#dirver_form').submit();
-            });
-        }
+		$('#dirver_form').submit();
+       
     });
 
     loadCourierServicesList();
