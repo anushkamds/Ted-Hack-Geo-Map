@@ -32,25 +32,39 @@ try {
     $responseMsg;
 
     //your logic goes here......
-    
-    $responseMsg = getSourceAndDestination($content);
+    $check=explode(" ",$content);
+	$flag=true;
+	if($check[0]=='REV' && sizeof($check)==3){
+		if($check[2]>=1 && $check[2]<=5){
+			$number=explode(':',$address);
+			updateReview($check[1],$number[1],$check[2]);
+		}
+		else{
+			$flag=false;
+		}
+	}
+	elseif(!$flag){
+		echo "Invalid Review Responce";
+	}
+	else{
+		$responseMsg = getSourceAndDestination($content);
 
-    // Create the sender object server url
-    $sender = new SmsSender("https://localhost:7443/sms/send");
+		// Create the sender object server url
+		$sender = new SmsSender("https://localhost:7443/sms/send");
 
-    //sending a one message
+		//sending a one message
 
- 	$applicationId = "APP_000001";
- 	$encoding = "0";
- 	$version =  "1.0";
-    $password = "password";
-    $sourceAddress = "77000";
-    $deliveryStatusRequest = "1";
-    $charging_amount = ":15.75";
-    $destinationAddresses = array("tel:94771122336");
-    $binary_header = "";
-    $res = $sender->sms($responseMsg, $destinationAddresses, $password, $applicationId, $sourceAddress, $deliveryStatusRequest, $charging_amount, $encoding, $version, $binary_header);
-
+		$applicationId = "APP_000001";
+		$encoding = "0";
+		$version =  "1.0";
+		$password = "password";
+		$sourceAddress = "77000";
+		$deliveryStatusRequest = "1";
+		$charging_amount = ":15.75";
+		$destinationAddresses = array("tel:94771122336");
+		$binary_header = "";
+		$res = $sender->sms($responseMsg, $destinationAddresses, $password, $applicationId, $sourceAddress, $deliveryStatusRequest, $charging_amount, $encoding, $version, $binary_header);
+	}
 } catch (SmsException $ex) {
     //throws when failed sending or receiving the sms
     error_log("ERROR: {$ex->getStatusCode()} | {$ex->getStatusMessage()}");
@@ -129,4 +143,10 @@ function getLocationByName($locationName, $fuzzy = 1.0) {
         return $val->countryCode == 'LK';
     });
     return array_shift($lkLocations);
+}
+
+function updateReview($driverId,$userNumber,$review){
+	$query="UPDATE `tad_courier`.`review_table` SET `rating` = $review WHERE `driver_id` =$driverId AND `userNumber` = $userNumber";
+	$sth = DbManager::getConnection()->query($query);
+	return $sth->execute();
 }
