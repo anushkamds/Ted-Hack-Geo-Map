@@ -118,3 +118,19 @@ CREATE TABLE IF NOT EXISTS `service_log` (
 FOREIGN KEY (`driver_id`) REFERENCES `driver`(`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+
+CREATE TABLE IF NOT EXISTS `location` (
+	`country_code` char(2),
+	`postal_code` varchar(20),
+	`place_name` varchar(180),
+	`admin_name1` varchar(100),
+	`admin_code1` varchar(20),
+	`admin_name2` varchar(100),
+	`admin_code2` varchar(20),
+	`admin_name3` varchar(100),
+	`admin_code3` varchar(20),
+	`latitude` decimal(7, 5),
+	`longitude` decimal(8, 5),
+	`accuracy` int(1)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

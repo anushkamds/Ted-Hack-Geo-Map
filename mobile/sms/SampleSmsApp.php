@@ -34,19 +34,16 @@ try {
     //your logic goes here......
     $check=explode(" ",$content);
 	$flag=true;
-	if($check[0]=='REV' && sizeof($check)==3){
-		if($check[2]>=1 && $check[2]<=5){
+	if ($check[0]=='REV' && sizeof($check)==3) {
+		if ($check[2]>=1 && $check[2]<=5) {
 			$number=explode(':',$address);
 			updateReview($check[1],$number[1],$check[2]);
-		}
-		else{
+		} else{
 			$flag=false;
 		}
-	}
-	elseif(!$flag){
+	} elseif (!$flag) {
 		echo "Invalid Review Responce";
-	}
-	else{
+	} else{
 		$responseMsg = getSourceAndDestination($content);
 
 		// Create the sender object server url
@@ -108,9 +105,12 @@ function checkValidCity($cityName){
 
 function getResponce($source, $destination) {
 	$sourceInfo = getLocationByName($source);
+    if (is_null($sourceInfo)) {
+        return 'source name could not found';
+    }
 	$destinationInfo = getLocationByName($destination);
-    if (is_null($sourceInfo) || is_null($destinationInfo)) {
-        return 'Something wrong with source or destination names';
+    if (is_null($destinationInfo)) {
+        return 'destination name could not found';
     }
 	include_once '../../lib/DriverSearch.php';
 	$driverFinder = new DriverSearch();
@@ -136,6 +136,13 @@ function saveRequest($splitMessage,$address,$responseMsg){
 }
 
 function getLocationByName($locationName, $fuzzy = 1.0) {
+    $pdo = DbManager::getConnection();
+    $sth = $pdo->prepare('select latitude as lat, longitude as lng, "LK" as countryCode from location where place_name = :name');
+    $sth->execute(array('name' => $locationName));
+    $location = $sth->fetchObject();
+    if ($location) {
+        return $location;
+    }
 	require_once 'Services/GeoNames.php';
 	$geo = new Services_GeoNames();
 	$locations = $geo->search(array('q' => $locationName, 'username' => 'damith', 'maxRows' => '10', 'fuzzy' => $fuzzy));
