@@ -72,22 +72,25 @@ try {
 	Extract Source and Destination from SMS message
 **/
 function getSourceAndDestination($smsMessage){
-	$splitMessage=explode(' ', $smsMessage);
+    $splitMessage = explode(' ', $smsMessage);
 	$responseMsg='';
 	if (sizeof($splitMessage) == 2) {
-		$validation=true;
-		if (!checkValidCity($splitMessage[0])) {
-			$responseMsg.=' Invalid Source City Name';
-			$validation=false;
+        list($sourceStr, $destinationStr) = $splitMessage;
+		$valid =true;
+        $source = getLocationByName($sourceStr);
+		if (!$source) {
+			$responseMsg = ' Invalid Source City Name';
+			$valid = false;
 		}
-		if (!checkValidCity($splitMessage[1])) {
-			$responseMsg.=' Invalid Destination City Name';
-			$validation=false;
+        $destination = getLocationByName($destinationStr);
+		if (!$destination) {
+			$responseMsg = ' Invalid Destination City Name';
+			$valid = false;
 		}
-		if ($validation) {
-			$responseMsg=getResponce($splitMessage[0], $splitMessage[1]);
+		if ($valid) {
+			$responseMsg = getResponce($source, $destination);
 			$receiver = new SmsReceiver();
-			saveRequest($splitMessage,$receiver->getAddress(),$responseMsg);
+            saveRequest($splitMessage,$receiver->getAddress(),$responseMsg);
 		}
 	} else {
 		$responseMsg='Invalid Message content format should be [source] <space> [destination]';
@@ -100,28 +103,37 @@ function checkValidCity($cityName){
     if (is_null($existing)) {
         return false;
     }
-	return true;
+	return $existing;
+}
+
+function notifyDrivers($driversNearSourceLocation) {
+    // TODO: send notifications to matching drivers
 }
 
 function getResponce($source, $destination) {
-	$sourceInfo = getLocationByName($source);
-    if (is_null($sourceInfo)) {
-        return 'source name could not found';
-    }
-	$destinationInfo = getLocationByName($destination);
-    if (is_null($destinationInfo)) {
-        return 'destination name could not found';
-    }
 	include_once '../../lib/DriverSearch.php';
 	$driverFinder = new DriverSearch();
-    $driversNearSourceLocation = $driverFinder->findDriversNearSourceLocation(array($sourceInfo->lat, $sourceInfo->lng));
+    $driversNearSourceLocation = $driverFinder->findDriversNearSourceLocation(array($source->lat, $source->lng));
     if ($driversNearSourceLocation) {
-        //TODO send sms to drivers and wait for their response.
+        notifyDrivers($driversNearSourceLocation);
+        /*set_time_limit(0);
+        $waitTime = 5; // wait time in minutes
+        $sTime = time();
+        setRequestStatus();
+        do {
+            sleep(10);
+            $requestStatus = getRequestStatus();
+            if ($requestStatus == 'Served') {
+                return; // no need to do any further processing.
+            }
+            $timeElapsed = time() - $sTime;
+        } while($timeElapsed < $waitTime * 60);*/
     }
-	$matchingDrivers = $driverFinder->getMatchingDrivers(array($sourceInfo->lat, $sourceInfo->lng), array($destinationInfo->lat, $destinationInfo->lng), 5);
+	$matchingDrivers = $driverFinder->getMatchingDrivers(array($source->lat, $source->lng), array($destination->lat, $destination->lng), 5);
 	$rowFormat = '%firstName% %lastName% %phone%';
 	$driverRows = array();
-	foreach ($matchingDrivers as $driver) {
+    $drivers = count($driversNearSourceLocation) >= 5 ? $driversNearSourceLocation : array_merge($driversNearSourceLocation, $matchingDrivers);
+	foreach ($drivers as $driver) {
 		$replacements = array('%firstName%' => $driver['first_name'], '%lastName%' => $driver['last_name'], '%phone%' => $driver['mobile_number']);
 		$driverRows[] = strtr($rowFormat, $replacements);
 	}

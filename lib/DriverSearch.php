@@ -124,7 +124,10 @@ class DriverSearch {
         $longRange = array($longitudeX - 0.5, $longitudeX + 0.5);
         $q = 'SELECT id, first_name, mobile_number FROM driver WHERE TIMESTAMPDIFF(MINUTE,last_update_time,CURRENT_TIMESTAMP) < 5 AND (lat BETWEEN ? AND ?) AND (log BETWEEN ? AND ?) AND haversine(lat, log, ?, ?) < 5;';
         $sth = DbManager::getConnection()->prepare($q);
-        $sth->execute(array_merge($latRange, $longRange, $source));
+        $params = array_merge($latRange, $longRange, $source);
+        logFile("Query: " . $q . "\n");
+        logFile("Parameters: " . var_export($params, true) . "\n");
+        $sth->execute($params);
         return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
 }
