@@ -99,8 +99,9 @@ CREATE TABLE IF NOT EXISTS `route` (
  FOREIGN KEY (`route_id`) REFERENCES `route`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER TABLE  `driver` ADD  `lat` FLOAT( 30, 27 ) NOT NULL AFTER  `courrier_service_provide_id` ,
-ADD  `log` FLOAT( 30, 27 ) NOT NULL AFTER  `lat` ;
+ALTER TABLE  `driver` ADD  `lat` FLOAT( 30, 27 ) NOT NULL,
+ADD `log` FLOAT( 30, 27 ),
+ADD `last_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 --
 -- Table structure for table `service_log`

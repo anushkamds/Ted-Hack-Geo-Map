@@ -69,8 +69,8 @@ class DriverSearch {
 
     function getMatchingRoutesThroughLocation($location, $radius) {
         list($latitudeX, $longitudeX) = $location;
-        $latRange = array($latitudeX - 1, $latitudeX + 1); // getLatRange($latitudeX, $radius);
-        $longRange = array($longitudeX - 1, $longitudeX + 1); // getLongRange($longitudeX, $radius);
+        $latRange = array($latitudeX - 0.5, $latitudeX + 0.5); // getLatRange($latitudeX, $radius);
+        $longRange = array($longitudeX - 0.5, $longitudeX + 0.5); // getLongRange($longitudeX, $radius);
         $query = 'select route_id, haversine(`lat`, `log`, ?, ?) as distance, `order` from way_point where (`lat` BETWEEN ? AND ?) AND (`log` BETWEEN ? AND ?) having distance <= ? order by distance';
         $sth = DbManager::getConnection()->prepare($query);
         $params = array($latitudeX, $longitudeX, $latRange[0], $latRange[1], $longRange[0], $longRange[1], $radius);
@@ -117,4 +117,14 @@ class DriverSearch {
 		$query = 'select * from `driver` where `id` in (' . implode(',', $driverIds) . ")";
 		return DbManager::getConnection()->query($query)->fetchAll(PDO::FETCH_ASSOC);
 	}
+
+    public function findDriversNearSourceLocation($source) {
+        list($latitudeX, $longitudeX) = $source;
+        $latRange = array($latitudeX - 0.5, $latitudeX + 0.5);
+        $longRange = array($longitudeX - 0.5, $longitudeX + 0.5);
+        $q = 'SELECT id, first_name, mobile_number FROM driver WHERE TIMESTAMPDIFF(MINUTE,last_update_time,CURRENT_TIMESTAMP) < 5 AND (lat BETWEEN ? AND ?) AND (log BETWEEN ? AND ?) AND haversine(lat, log, ?, ?) < 5;';
+        $sth = DbManager::getConnection()->prepare($q);
+        $sth->execute(array_merge($latRange, $longRange, $source));
+        return $sth->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

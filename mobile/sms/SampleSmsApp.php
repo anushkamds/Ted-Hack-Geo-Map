@@ -114,6 +114,10 @@ function getResponce($source, $destination) {
     }
 	include_once '../../lib/DriverSearch.php';
 	$driverFinder = new DriverSearch();
+    $driversNearSourceLocation = $driverFinder->findDriversNearSourceLocation(array($sourceInfo->lat, $sourceInfo->lng));
+    if ($driversNearSourceLocation) {
+        //TODO send sms to drivers and wait for their response.
+    }
 	$matchingDrivers = $driverFinder->getMatchingDrivers(array($sourceInfo->lat, $sourceInfo->lng), array($destinationInfo->lat, $destinationInfo->lng), 5);
 	$rowFormat = '%firstName% %lastName% %phone%';
 	$driverRows = array();
