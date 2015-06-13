@@ -92,7 +92,7 @@ class DriverSearch {
         $routesThoughSource = $this->getMatchingRoutesThroughLocation($source, $radius);
         logFile("Routes though source: " . print_r($routesThoughSource, true) . "\n");
         if ($routesThoughSource) {
-            $routesThoughDestination = $this->getMatchingRoutesThroughLocation($source, $destination);
+            $routesThoughDestination = $this->getMatchingRoutesThroughLocation($destination, $radius);
             logFile("Routes though destination: " . print_r($routesThoughDestination, true) . "\n");
             if ($routesThoughDestination) {
                 $candidateRouteIds = array();
